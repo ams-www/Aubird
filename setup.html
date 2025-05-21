@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>新しい2FAを登録</title>
+  <link rel="stylesheet" href="../assets/style-v1.css">
+</head>
+<body>
+  <h1>2FA登録</h1>
+  <form id="form">
+    サイト名: <input name="site" required>
+    2FAコード: <input name="code" required>
+    <button type="submit">保存</button>
+  </form>
+  <div id="msg"></div>
+  <script>
+    document.getElementById("form").onsubmit = function(e){
+      e.preventDefault();
+      const site = encodeURIComponent(this.site.value);
+      const code = encodeURIComponent(this.code.value);
+      // クッキーに保存（Secure属性はHTTPSで自動付与される場合もあるけど、明示もできる）
+      document.cookie = `aubird_2fa_${site}=${code}; path=/; SameSite=Strict; Secure`;
+      document.getElementById("msg").textContent = "保存したよ！";
+      this.reset();
+    }
+  </script>
+</body>
+</html>

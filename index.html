@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Aubird - ホーム</title>
+  <link rel="stylesheet" href="../assets/style-v1.css">
+</head>
+<body>
+  <h1>2FA一覧</h1>
+  <div id="list"></div>
+  <script>
+    // クッキーから2FA情報を全部取得して表示
+    function get2FAs() {
+      const cookies = document.cookie.split("; ");
+      let html = "";
+      cookies.forEach(c => {
+        const [key, val] = c.split("=");
+        if(key.startsWith("aubird_2fa_")) {
+          const name = decodeURIComponent(key.replace("aubird_2fa_", ""));
+          const code = decodeURIComponent(val);
+          html += `<div><b>${name}</b> : ${code}</div>`;
+        }
+      });
+      document.getElementById("list").innerHTML = html || "まだ保存されてないよ";
+    }
+    get2FAs();
+  </script>
+</body>
+</html>
