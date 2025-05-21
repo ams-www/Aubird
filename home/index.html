@@ -4,7 +4,48 @@
   <meta charset="UTF-8">
   <title>Aubird - ホーム</title>
   <link rel="stylesheet" href="../assets/style-v1.css">
+</head><!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Aubird - ホーム</title>
+  <script src="https://cdn.jsdelivr.net/npm/otplib@12.0.1/otplib-browser.min.js"></script>
+  <link rel="stylesheet" href="../assets/style-v1.css">
 </head>
+<body>
+  <h1>2FAコード一覧</h1>
+  <div id="list"></div>
+  <script>
+    // クッキーからシークレットを取得
+    function get2FASeeds() {
+      const cookies = document.cookie.split("; ");
+      let items = [];
+      cookies.forEach(c => {
+        const [key, val] = c.split("=");
+        if(key.startsWith("aubird_2fa_seed_")) {
+          const name = decodeURIComponent(key.replace("aubird_2fa_seed_", ""));
+          const secret = decodeURIComponent(val);
+          items.push({name, secret});
+        }
+      });
+      return items;
+    }
+
+    function updateCodes() {
+      const otplib = window.otplib;
+      const list = get2FASeeds();
+      let html = "";
+      list.forEach(({name, secret}) => {
+        let code = otplib.authenticator.generate(secret);
+        html += `<div><b>${name}</b> : <span>${code}</span></div>`;
+      });
+      document.getElementById("list").innerHTML = html || "まだ保存されてないよ";
+    }
+    setInterval(updateCodes, 1000); // 1秒ごとに更新
+    updateCodes();
+  </script>
+</body>
+</html>
 <body>
   <h1>2FA一覧</h1>
   <div id="list"></div>
